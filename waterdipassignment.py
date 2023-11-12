@@ -1,12 +1,10 @@
 from flask import Flask, request, jsonify
 app = Flask(__name__)
 tasks = []
-#Function to generate a unique ID for tasks
 def generate_task_id():
     return len(tasks) + 1
 
-#Route to create a new task
-@app.route('/tasks', methods=['POST'])
+@app.route('/v1/tasks', methods=['POST'])
 def create_task():
     data = request.get_json()
     title = data.get('title')
@@ -21,28 +19,24 @@ def create_task():
     tasks.append(new_task)
     return jsonify(new_task)
 
-#Route to list all tasks
-@app.route('/tasks', methods=['GET'])
+@app.route('/v1/tasks', methods=['GET'])
 def get_all_tasks():
     return jsonify(tasks)
 
-#Route to get a specific task
-@app.route('/tasks/<int:task_id>', methods=['GET'])
+@app.route('/v1/tasks/<int:task_id>', methods=['GET'])
 def get_task(task_id):
     task = next((t for t in tasks if t['id'] == task_id), None)
     if task is None:
         return jsonify({'error': 'Task not found'}), 404
     return jsonify(task)
 
-#Route to delete a specific task
-@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+@app.route('/v1/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
     global tasks
     tasks = [t for t in tasks if t['id'] != task_id]
     return jsonify({'message': 'Task deleted successfully'})
 
-#Route to edit a specific task
-@app.route('/tasks/<int:task_id>', methods=['PUT'])
+@app.route('/v1/tasks/<int:task_id>', methods=['PUT'])
 def edit_task(task_id):
     data = request.get_json()
     title = data.get('title')
@@ -59,8 +53,7 @@ def edit_task(task_id):
 
     return jsonify(task)
 
-#Bulk add multiple tasks
-@app.route('/tasks/bulk', methods=['POST'])
+@app.route('/v1/tasks/bulk', methods=['POST'])
 def bulk_add_tasks():
     data = request.get_json()
     new_tasks = data.get('tasks')
@@ -79,8 +72,7 @@ def bulk_add_tasks():
 
     return jsonify({'message': 'Bulk tasks added successfully'})
 
-#Bulk delete multiple tasks
-@app.route('/tasks/bulk', methods=['DELETE'])
+@app.route('/v1/tasks/bulk', methods=['DELETE'])
 def bulk_delete_tasks():
     data = request.get_json()
     task_ids = data.get('task_ids')
