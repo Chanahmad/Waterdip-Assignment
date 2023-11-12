@@ -25,7 +25,7 @@ def get_all_tasks():
 
 @app.route('/v1/tasks/<int:task_id>', methods=['GET'])
 def get_task(task_id):
-    task = next((t for t in tasks if t['id'] == task_id), None)
+    task = next((i for i in tasks if i['id'] == task_id), None)
     if task is None:
         return jsonify({'error': 'Task not found'}), 404
     return jsonify(task)
@@ -33,7 +33,7 @@ def get_task(task_id):
 @app.route('/v1/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
     global tasks
-    tasks = [t for t in tasks if t['id'] != task_id]
+    tasks = [i for i in tasks if i['id'] != task_id]
     return jsonify({'message': 'Task deleted successfully'})
 
 @app.route('/v1/tasks/<int:task_id>', methods=['PUT'])
@@ -42,7 +42,7 @@ def edit_task(task_id):
     title = data.get('title')
     completed = data.get('completed')
 
-    task = next((t for t in tasks if t['id'] == task_id), None)
+    task = next((i for i in tasks if i['id'] == task_id), None)
     if task is None:
         return jsonify({'error': 'Task not found'}), 404
 
@@ -80,7 +80,7 @@ def bulk_delete_tasks():
         return jsonify({'error': 'Invalid data format'}), 400
 
     global tasks
-    tasks = [t for t in tasks if t['id'] not in task_ids]
+    tasks = [i for i in tasks if i['id'] not in task_ids]
 
     return jsonify({'message': 'Bulk tasks deleted successfully'})
 
